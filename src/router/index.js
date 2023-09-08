@@ -35,6 +35,33 @@ const routes = [
         component: () => import('@/views/theme/Typography.vue'),
       },
       {
+        path: '/blockchain',
+        name: 'Blockchain',
+        component: {
+          render() {
+            return h(resolveComponent('router-view'))
+          },
+        },
+        redirect: '/blockchain/database',
+        children: [
+          {
+            path: '/blockchain/database',
+            name: 'Database',
+            component: () => import('@/views/blockchain/Database.vue'),
+          },
+          {
+            path: '/blockchain/verify',
+            name: 'Verify',
+            component: () => import('@/views/blockchain/Verify.vue'),
+          },
+          {
+            path: '/blockchain/overview',
+            name: 'Overview',
+            component: () => import('@/views/blockchain/Overview.vue'),
+          },
+        ],
+      },
+      {
         path: '/base',
         name: 'Base',
         component: {

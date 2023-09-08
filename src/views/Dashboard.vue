@@ -1,6 +1,5 @@
 <template>
   <div>
-    <WidgetsStatsA />
     <CRow>
       <CCol :md="12">
         <CCard class="mb-4">
@@ -276,14 +275,12 @@ import avatar4 from '@/assets/images/avatars/4.jpg'
 import avatar5 from '@/assets/images/avatars/5.jpg'
 import avatar6 from '@/assets/images/avatars/6.jpg'
 import MainChartExample from './charts/MainChartExample'
-import WidgetsStatsA from './widgets/WidgetsStatsTypeA.vue'
 import WidgetsStatsD from './widgets/WidgetsStatsTypeD.vue'
 
 export default {
   name: 'Dashboard',
   components: {
     MainChartExample,
-    WidgetsStatsA,
     WidgetsStatsD,
   },
   setup() {

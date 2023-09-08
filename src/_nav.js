@@ -31,6 +31,29 @@ export default [
   },
   {
     component: 'CNavGroup',
+    name: 'Blockchain',
+    to: '/blockchain',
+    icon: 'cil-puzzle',
+    items: [
+      {
+        component: 'CNavItem',
+        name: 'Database',
+        to: '/blockchain/database',
+      },
+      {
+        component: 'CNavItem',
+        name: 'Verify',
+        to: '/blockchain/verify',
+      },
+      {
+        component: 'CNavItem',
+        name: 'Overview',
+        to: '/blockchain/overview',
+      },
+    ],
+  },
+  {
+    component: 'CNavGroup',
     name: 'Base',
     to: '/base',
     icon: 'cil-puzzle',
