@@ -31,10 +31,15 @@
                 <CAccordionBody>{{ hash }}</CAccordionBody>
               </CAccordionItem>
               <CAccordionItem :item-key="2">
-                <CAccordionHeader> 区块信息 </CAccordionHeader>
+                <CAccordionHeader> 详细信息 </CAccordionHeader>
                 <CAccordionBody>
-                  <p><strong>root</strong> {{ root }}</p>
-                  <p><strong>number</strong> {{ number }}</p>
+                  <p><strong>number:</strong> {{ number }}</p>
+                  <p><strong>chaincode : </strong> {{ chaincode }}</p>
+                  <p><strong>function: </strong> {{ functionname }}</p>
+                  <p><strong>proof_path: </strong> {{ proof_path }}</p>
+                  <p><strong>proof: </strong> {{ proof }}</p>
+                  <p><strong>root: </strong> {{ root }}</p>
+                  <p><strong>digest: </strong> {{ digest }}</p>
                 </CAccordionBody>
               </CAccordionItem>
             </CAccordion>
@@ -65,7 +70,7 @@
               <CFormInput id="validationCustom04" v-model="value1" required />
               <CFormFeedback valid> Looks good! </CFormFeedback>
             </CCol>
-            <CAlert v-if="showMessage1" color="success">
+            <CAlert v-if="showMessage1" :color="alertColor">
               <p>您成功在数据库中更改了数据!</p>
               <hr />
               <p class="mb-0">{{ message1 }}</p>
@@ -90,9 +95,15 @@ export default {
       validatedCustom02: null,
       showMessage: false, // 新增一个用于控制是否显示一句话的状态
       message: '',
+      alertColor: '',
       hash: '',
       root: '',
       number: '',
+      digest: '',
+      proof: '',
+      proof_path: '',
+      chaincode: '',
+      functionname: '',
       showMessage1: false, // 新增一个用于控制是否显示一句话的状态
       message1: '',
       key: '',
@@ -131,9 +142,14 @@ export default {
                 this.showMessage = true
                 this.message = response.data.message
                 const data = JSON.parse(this.message)
-                this.hash = data.hash
+                this.hash = data.valueHash
                 this.root = data.root
                 this.number = data.number
+                this.digest = data.digest
+                this.proof = data.merkleProof_Siblings
+                this.proof_path = data.merkleProof_Path
+                this.chaincode = data.chaincode
+                this.functionname = data.function
               })
               .catch((error) => {
                 // 处理请求出错的情况

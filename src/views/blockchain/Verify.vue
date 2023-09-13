@@ -17,13 +17,26 @@
               <CFormInput id="validationCustom01" v-model="key" required />
               <CFormFeedback valid> Looks good! </CFormFeedback>
             </CCol>
-            <CCol :xs="12" v-if="showMessage">
-              <p>message:{{ message }}</p>
-              <p>root:{{ root }}</p>
-              <p>digest:{{ digest }}</p>
-              <p>valuehash:{{ valuehash }}</p>
-              <p>hash:{{ hash }}</p>
-            </CCol>
+            <CAlert v-if="showMessage" :color="alertColor">
+              <p class="mb-0">{{ message }}</p>
+            </CAlert>
+            <CAccordion v-if="showMessage">
+              <CAccordionItem :item-key="1">
+                <CAccordionHeader> 哈希验证 </CAccordionHeader>
+                <CAccordionBody>
+                  <p><strong>value :</strong> {{ value }}</p>
+                  <p><strong>区块链哈希值 : </strong> {{ blockchainValue }}</p>
+                  <p><strong>数据库哈希值: </strong> {{ databaseValue }}</p>
+                </CAccordionBody>
+              </CAccordionItem>
+              <CAccordionItem :item-key="2">
+                <CAccordionHeader> 默克尔验证 </CAccordionHeader>
+                <CAccordionBody>
+                  <p><strong>根哈希:</strong> {{ root }}</p>
+                  <p><strong>计算结果: </strong> {{ hash }}</p>
+                </CAccordionBody>
+              </CAccordionItem>
+            </CAccordion>
             <CCol :xs="12">
               <CButton color="primary" type="submit">Submit form</CButton>
             </CCol>
@@ -48,7 +61,22 @@
             </CCol>
             <CCol :xs="12" v-if="showMessage1">
               <p>{{ message1 }}</p>
+              <p>{{ valueHashList }}</p>
             </CCol>
+            <CCard>
+              <CTable>
+                <thead>
+                  <tr>
+                    <th>ValueHash</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="(hash, index) in valueHashList" :key="index">
+                    <td>{{ hash }}</td>
+                  </tr>
+                </tbody>
+              </CTable>
+            </CCard>
             <CCol :xs="12">
               <CButton color="primary" type="submit">Submit form</CButton>
             </CCol>
@@ -68,17 +96,22 @@ export default {
       validatedCustom01: null,
       validatedCustom02: null,
       showMessage: false, // 新增一个用于控制是否显示一句话的状态
+      success: '',
+      alertColor: '',
       message: '',
       root: '',
-      digest: '',
+      blockchainValue: '',
+      databaseValue: '',
+      valueHashList: [],
       valuehash: '',
       hash: '',
-      showMessage1: false, // 新增一个用于控制是否显示一句话的状态
-      message1: '',
+      number: '',
       key: '',
       value: '',
       key1: '',
-      value1: '',
+      //verify
+      message1: '',
+      showMessage1: false, // 新增一个用于控制是否显示一句话的状态
     }
   },
   methods: {
@@ -105,17 +138,27 @@ export default {
                 // 处理服务器返回的数据
                 this.validatedCustom01 = true
                 this.showMessage = true
+                this.success = response.data.success
                 this.message = response.data.message
+                if (this.success === true) {
+                  this.alertColor = 'success'
+                } else if (this.success === false) {
+                  this.alertColor = 'danger'
+                }
+                this.blockchainValue = response.data.blockchainHash
+                this.databaseValue = response.data.databaseHash
+                this.value = response.data.value
                 this.root = response.data.root
-                this.digest = response.data.digest
                 this.hash = response.data.hash
                 this.valuehash = response.data.valuehash
+                this.number = response.data.number
               })
               .catch((error) => {
                 // 处理请求出错的情况
                 console.error('An error occurred:', error)
                 this.validatedCustom01 = false
                 this.showMessage = true
+                this.alertColor = 'warning'
                 this.message = 'An error occurred duringf form submission.'
               })
           })
@@ -138,15 +181,15 @@ export default {
         event.stopPropagation()
       } else {
         axios
-          .post('/api/change-data', {
+          .post('/block/get_history', {
             key: this.key1,
-            value: this.value1,
           })
           .then((response) => {
             // 处理服务器返回的数据
             this.validatedCustom02 = true
             this.showMessage1 = true
             this.message1 = response.data.message
+            this.valueHashList = response.data.valueHash
           })
           .catch((error) => {
             // 处理请求出错的情况
